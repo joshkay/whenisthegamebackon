@@ -1,0 +1,19 @@
+---
+import Team from "@islands/Team.tsx";
+import { getTeams } from "../api/nhl.api.ts";
+import Layout from "../layouts/layout.astro";
+
+export async function getStaticPaths() {
+  const teams = await getTeams();
+  return teams.map((team: any) => ({
+    params: { team: team.abbreviation.toLowerCase() },
+    props: { team },
+  }));
+}
+
+const { team } = Astro.props;
+---
+
+<Layout>
+  <Team team={team} />
+</Layout>
