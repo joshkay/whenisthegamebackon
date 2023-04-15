@@ -44,14 +44,136 @@ export interface NHLApiTeam {
   officialSiteUrl: string;
   franchiseId: number;
   active: boolean;
+  nextGameSchedule: {
+    dates: [
+      {
+        date: string;
+        games: [
+          {
+            gamePk: number;
+            link: string;
+            gameType: string;
+            season: string;
+            gameDate: string;
+            status: {
+              abstractGameState: string;
+              codedGameState: string;
+              detailedState: string;
+              statusCode: string;
+              startTimeTBD: boolean;
+            };
+            teams: {
+              away: {
+                leagueRecord: {
+                  wins: number;
+                  losses: number;
+                  ot: number;
+                  type: string;
+                };
+                score: number;
+                team: {
+                  id: number;
+                  name: string;
+                  link: string;
+                };
+              };
+              home: {
+                leagueRecord: {
+                  wins: number;
+                  losses: number;
+                  ot: number;
+                  type: string;
+                };
+                score: number;
+                team: {
+                  id: number;
+                  name: string;
+                  link: string;
+                };
+              };
+            };
+            venue: {
+              name: string;
+              link: string;
+              city: string;
+              timeZone: {
+                id: string;
+                offset: number;
+                tz: string;
+              };
+            };
+            content: {
+              link: string;
+            };
+          }
+        ];
+      }
+    ];
+  };
+  teamStats: {
+    type: {
+      displayName: string;
+    };
+    splits: [
+      {
+        season: string;
+        stat: {
+          gamesPlayed: number;
+          wins: number;
+          losses: number;
+          ot: number;
+          pts: number;
+          ptPctg: string;
+          goalsPerGame: string;
+          goalsAgainstPerGame: string;
+          evGGARatio: string;
+          powerPlayPercentage: string;
+          powerPlayGoals: number;
+          powerPlayGoalsAgainst: number;
+          powerPlayOpportunities: number;
+          penaltyKillPercentage: string;
+          shotsPerGame: string;
+          shotsAllowed: number;
+          winScoreFirst: number;
+          winOppScoreFirst: number;
+          winLeadFirstPer: number;
+          winLeadSecondPer: number;
+          winOutshootOpp: number;
+          winOutshotByOpp: number;
+          faceOffsTaken: number;
+          faceOffsWon: number;
+          faceOffsLost: number;
+          faceOffWinPercentage: string;
+          shootingPctg: string;
+          savePctg: string;
+        };
+      }
+    ];
+  }[];
 }
 
 export const getTeams = async (): Promise<NHLApiTeam[]> => {
-  const response = await fetch(`${BASE_URL}/teams/`);
+  const response = await fetch(
+    `${BASE_URL}/teams/?expand=team.schedule.next,team.stats`
+  );
   const data = await response.json();
   return data.teams;
 };
 
 export const getTeamLogo = (teamId: number) => {
   return `${LOGO_BASE_URL}/${teamId}.svg`;
+};
+
+export const getStandings = async () => {
+  const response = await fetch(`${BASE_URL}/standings`);
+  const data = await response.json();
+  return data.records;
+};
+
+export const getNextGameForTeam = async (teamId: number) => {
+  const response = await fetch(
+    `${BASE_URL}/teams/${teamId}?expand=team.schedule.next`
+  );
+  const data = await response.json();
+  return data.teams[0].nextGameSchedule?.dates[0].games[0].gameDate ?? null;
 };

@@ -15,5 +15,5 @@ const { team } = Astro.props;
 ---
 
 <Layout>
-  <Team team={team} />
+  <Team team={team} client:only="react" />
 </Layout>

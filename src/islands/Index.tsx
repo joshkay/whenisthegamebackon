@@ -5,8 +5,8 @@ import Teams from "@components/Teams";
 const Index = () => {
   return (
     <App>
-      <main className=" h-full w-full flex flex-col overflow-y-auto overflow-x-hidden">
-        <header className="flex items-baseline overflow-x-auto p-2 flex-wrap gap-y-4 py-6">
+      <main className=" h-full w-full flex flex-col overflow-y-auto overflow-x-hidden items-center">
+        <header className="flex flex-col items-baseline overflow-x-auto p-2 flex-wrap gap-y-4 py-6">
           <Teams />
         </header>
         <section className="flex flex-1 justify-center items-center overflow-y-auto">

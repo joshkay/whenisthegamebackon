@@ -9,7 +9,16 @@ interface TeamLogoProps {
 const TeamLogo = ({ team, className }: TeamLogoProps) => {
   const teamLogoUrl = getTeamLogo(team.id);
 
-  return <img className={className} src={teamLogoUrl} alt={team.name} />;
+  return (
+    <img
+      src={teamLogoUrl}
+      alt={team.name}
+      className={`${className} ${
+        !team.nextGameSchedule &&
+        "grayscale opacity-30 hover:opacity-100 hover:grayscale-0"
+      }`}
+    />
+  );
 };
 
 export default TeamLogo;
