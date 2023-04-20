@@ -152,6 +152,14 @@ export interface NHLApiTeam {
   }[];
 }
 
+export enum NhlGameStatus {
+  InProgress = "InProgress",
+  Commercial = "Commercial",
+  Intermission = "Intermission",
+  PreGame = "PreGame",
+  PostGame = "PostGame",
+}
+
 export const getTeams = async (): Promise<NHLApiTeam[]> => {
   const response = await fetch(
     `${BASE_URL}/teams/?expand=team.schedule.next,team.stats`
@@ -175,5 +183,53 @@ export const getNextGameForTeam = async (teamId: number) => {
     `${BASE_URL}/teams/${teamId}?expand=team.schedule.next`
   );
   const data = await response.json();
-  return data.teams[0].nextGameSchedule?.dates[0].games[0].gameDate ?? null;
+  return data.teams[0].nextGameSchedule?.dates[0].games[0] ?? null;
+};
+
+export const getLiveGameStatus = async (
+  gameId: number
+): Promise<{
+  status: NhlGameStatus;
+  description?: string;
+  timeLeft?: number;
+  lastStoppage?: string;
+}> => {
+  const response = await fetch(`${BASE_URL}/game/${gameId}/feed/live`);
+  const data = await response.json();
+  console.log(data);
+
+  const playsDescending = data.liveData.plays.allPlays.reverse();
+  const lastStoppage = playsDescending.find(
+    (play: any) =>
+      play.result.eventTypeId === "STOP" ||
+      play.result.eventTypeId === "GOAL" ||
+      play.result.eventTypeId === "PERIOD_END"
+  );
+
+  const inIntermission =
+    data.liveData.linescore.intermissionInfo.inIntermission;
+
+  if (inIntermission) {
+    return {
+      status: NhlGameStatus.Intermission,
+      description: lastStoppage?.result?.description,
+      timeLeft:
+        data.liveData.linescore.intermissionInfo.intermissionTimeRemaining,
+      lastStoppage: lastStoppage?.about?.dateTime,
+    };
+  }
+
+  if (lastStoppage === playsDescending[0]) {
+    return {
+      status: NhlGameStatus.InProgress,
+      description: lastStoppage?.result?.description,
+      lastStoppage: lastStoppage?.about?.dateTime,
+    };
+  }
+
+  return {
+    status: NhlGameStatus.InProgress,
+    description: "They play",
+    lastStoppage: lastStoppage?.about?.dateTime,
+  };
 };

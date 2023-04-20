@@ -13,20 +13,26 @@ const Teams = () => {
     queryFn: getTeams,
   });
 
-  console.log(standings, teams);
   if (!standings || !teams) return null;
 
   return (
     <>
-      {standings.map(({ teamRecords }: any) => (
-        <div className="flex flex-1 flex-wrap">
+      {standings.map(({ division, teamRecords }: any) => (
+        <div
+          key={division.name}
+          //className="flex flex-1 flex-wrap items-center justify-baseline px-2"
+          className="grid grid-cols-4 md:grid-cols-8"
+        >
           {teamRecords?.map(({ team: { id } }: any) => {
             const team = teams.find((team: NHLApiTeam) => team.id === id);
             if (!team) return null;
 
             return (
-              <div key={team.id}>
-                <div title={team.name} className="w-32 object-cover">
+              <div key={team.id} className="py-2">
+                <div
+                  title={team.name}
+                  className="w-24 lg:w-28 xl:w-36 object-cover"
+                >
                   <a href={`/${team.abbreviation.toLowerCase()}`}>
                     <TeamLogo team={team} />
                   </a>

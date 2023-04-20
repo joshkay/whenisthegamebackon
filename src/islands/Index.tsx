@@ -5,18 +5,13 @@ import Teams from "@components/Teams";
 const Index = () => {
   return (
     <App>
-      <main className=" h-full w-full flex flex-col overflow-y-auto overflow-x-hidden items-center">
-        <header className="flex flex-col items-baseline overflow-x-auto p-2 flex-wrap gap-y-4 py-6">
+      <header className="absolute top-0 left-0 w-14 h-14">
+        <img src={nhlLogoUrl} alt="NHL logo" className="m-2 animate-spin" />
+      </header>
+      <main className="h-full w-full flex overflow-y-auto">
+        <div className="flex flex-col m-auto p-2 gap-y-2 py-2">
           <Teams />
-        </header>
-        <section className="flex flex-1 justify-center items-center overflow-y-auto">
-          <h1 className="font-extrabold text-4xl sm:text-5xl lg:text-6xl text-center">
-            Who do you fancy?
-          </h1>
-          <div className="absolute bottom-0 left-0 w-20 h-20">
-            <img src={nhlLogoUrl} alt="NHL logo" className="m-4 animate-spin" />
-          </div>
-        </section>
+        </div>
       </main>
     </App>
   );

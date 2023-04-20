@@ -11,16 +11,17 @@ interface TeamProps {
 const Team = ({ team }: TeamProps) => {
   return (
     <App>
+      <header className="absolute top-0 left-0 w-14 h-14 z-10">
+        <a href={`/`}>
+          <img src={nhlLogoUrl} alt="NHL logo" className="m-2" />
+        </a>
+      </header>
+
       <main className="h-full w-full flex overflow-y-auto overflow-x-hidden">
-        <div className="absolute top-0 left-0 w-10 h-10 m-2 z-10">
-          <a href={`/`}>
-            <img src={nhlLogoUrl} alt="NHL logo" />
-          </a>
-        </div>
         <aside className="flex overflow-hidden absolute top-0 right-0 bottom-0">
           <TeamLogo className="scale-125 translate-x-1/4" team={team} />
         </aside>
-        <section className="flex flex-1 absolute top-0 left-0 bottom-0 right-1/2 pl-20 pt-20">
+        <section className="flex flex-1 absolute top-0 left-0 bottom-0 lg:right-1/2 pl-8 lg:pl-20 pt-20">
           <TeamNextGame team={team} />
         </section>
       </main>

@@ -13,9 +13,10 @@ const TeamLogo = ({ team, className }: TeamLogoProps) => {
     <img
       src={teamLogoUrl}
       alt={team.name}
-      className={`${className} ${
-        !team.nextGameSchedule &&
-        "grayscale opacity-30 hover:opacity-100 hover:grayscale-0"
+      className={`${className ?? ""} ${
+        !team.nextGameSchedule
+          ? "grayscale opacity-30 hover:opacity-100 hover:grayscale-0"
+          : ""
       }`}
     />
   );
