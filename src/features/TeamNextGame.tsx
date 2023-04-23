@@ -67,7 +67,11 @@ const TeamNextGame = ({ team }: TeamProps) => {
   if (gameOn) {
     return (
       <div>
-        <TeamLiveGame gameId={nextGame.gamePk} team={team} />
+        <TeamLiveGame
+          gameId={nextGame.gamePk}
+          onGameOver={() => setGameOn(false)}
+          team={team}
+        />
       </div>
     );
   }

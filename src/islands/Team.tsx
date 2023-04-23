@@ -1,8 +1,8 @@
-import TeamLogo from "@components/TeamLogo";
+import TeamLogo from "@features/TeamLogo";
 import App from "../App";
-import { getNextGameForTeam, nhlLogoUrl } from "../api/nhl.api";
+import { nhlLogoUrl } from "../api/nhl.api";
 import type { NHLApiTeam } from "../api/nhl.api";
-import TeamNextGame from "@components/TeamNextGame";
+import TeamNextGame from "@features/TeamNextGame";
 
 interface TeamProps {
   team: NHLApiTeam;

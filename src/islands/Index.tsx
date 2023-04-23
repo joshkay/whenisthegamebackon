@@ -1,6 +1,6 @@
 import App from "../App";
 import { nhlLogoUrl } from "../api/nhl.api";
-import Teams from "@components/Teams";
+import Teams from "@features/Teams";
 
 const Index = () => {
   return (

@@ -1,9 +1,9 @@
 const BASE_URL = "https://statsapi.web.nhl.com/api/v1";
 const LOGO_BASE_URL =
-  "https://www-league.nhlstatic.com/images/logos/teams-current-primary-light";
+  "https://www-league.nhlstatic.com/images/logos/teams-current-primary-dark";
 
 export const nhlLogoUrl =
-  "https://www-league.nhlstatic.com/images/logos/league-light/133.svg";
+  "https://www-league.nhlstatic.com/images/logos/league-dark/133.svg";
 
 export interface NHLApiTeam {
   id: number;
@@ -185,14 +185,16 @@ export const getNextGameForTeam = async (teamId: number) => {
   const data = await response.json();
   return data.teams[0].nextGameSchedule?.dates[0].games[0] ?? null;
 };
-
 export const getLiveGameStatus = async (
   gameId: number
 ): Promise<{
   status: NhlGameStatus;
   description?: string;
+  stoppage?: string;
   timeLeft?: number;
-  lastStoppage?: string;
+  currentTime?: string;
+  stoppageTime?: string;
+  linescore?: any;
 }> => {
   const response = await fetch(`${BASE_URL}/game/${gameId}/feed/live`);
   const data = await response.json();
@@ -212,24 +214,32 @@ export const getLiveGameStatus = async (
   if (inIntermission) {
     return {
       status: NhlGameStatus.Intermission,
+      stoppage: lastStoppage?.about?.dateTime,
       description: lastStoppage?.result?.description,
       timeLeft:
         data.liveData.linescore.intermissionInfo.intermissionTimeRemaining,
-      lastStoppage: lastStoppage?.about?.dateTime,
+      linescore: data.liveData.linescore,
     };
   }
 
   if (lastStoppage === playsDescending[0]) {
     return {
       status: NhlGameStatus.InProgress,
-      description: lastStoppage?.result?.description,
-      lastStoppage: lastStoppage?.about?.dateTime,
+      description: `${data.liveData.linescore.currentPeriodOrdinal} Period`,
+      stoppage: lastStoppage?.result?.description,
+      stoppageTime: lastStoppage?.about?.dateTime,
+      currentTime:
+        data.liveData.linescore.currentPeriodTimeRemaining === "END"
+          ? "0:00"
+          : data.liveData.linescore.currentPeriodTimeRemaining,
+      linescore: data.liveData.linescore,
     };
   }
 
   return {
     status: NhlGameStatus.InProgress,
-    description: "They play",
-    lastStoppage: lastStoppage?.about?.dateTime,
+    description: `${data.liveData.linescore.currentPeriodOrdinal} Period`,
+    currentTime: data.liveData.linescore.currentPeriodTimeRemaining,
+    linescore: data.liveData.linescore,
   };
 };
